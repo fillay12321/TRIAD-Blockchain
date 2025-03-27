@@ -155,8 +155,64 @@ impl TriadQuantumPeer {
     /// Устанавливает отправитель квантовых событий для квантового поля
     async fn setup_quantum_field(&self) -> Result<(), DistributedError> {
         let mut field = self.quantum_field.write().await;
-        field.set_event_sender(self.quantum_event_tx.clone());
+        let sender_adapter = self.create_event_sender_adapter();
+        field.set_event_sender(sender_adapter);
         Ok(())
+    }
+    
+    /// Создает адаптер для отправки событий между разными типами
+    fn create_event_sender_adapter(&self) -> mpsc::Sender<crate::quantum::coherent_field::QuantumEvent> {
+        let (tx, mut rx) = mpsc::channel::<crate::quantum::coherent_field::QuantumEvent>(100);
+        let event_tx = self.quantum_event_tx.clone();
+        
+        // Создаем адаптер для преобразования типов
+        let peer_id = self.peer_id.clone();
+        
+        tokio::spawn(async move {
+            while let Some(coherent_event) = rx.recv().await {
+                // Преобразуем из типа coherent_field::QuantumEvent в protocol::QuantumEvent
+                let protocol_event = crate::distributed::quantum_protocol::QuantumEvent {
+                    event_id: coherent_event.event_id,
+                    originator: coherent_event.originator,
+                    timestamp: coherent_event.timestamp,
+                    priority: coherent_event.priority,
+                    payload: match coherent_event.payload {
+                        crate::quantum::coherent_field::QuantumEventPayload::Entanglement { 
+                            local_qubits, remote_peer, remote_qubits, entanglement_type 
+                        } => {
+                            crate::distributed::quantum_protocol::QuantumEventPayload::Entanglement {
+                                local_qubits,
+                                remote_peer,
+                                remote_qubits,
+                                entanglement_type: match entanglement_type {
+                                    crate::quantum::coherent_field::EntanglementType::Bell => 
+                                        crate::distributed::quantum_protocol::EntanglementType::Bell,
+                                    crate::quantum::coherent_field::EntanglementType::GHZ => 
+                                        crate::distributed::quantum_protocol::EntanglementType::GHZ,
+                                    crate::quantum::coherent_field::EntanglementType::Cluster => 
+                                        crate::distributed::quantum_protocol::EntanglementType::Cluster,
+                                    crate::quantum::coherent_field::EntanglementType::Partial(p) => 
+                                        crate::distributed::quantum_protocol::EntanglementType::Partial(p),
+                                }
+                            }
+                        },
+                        crate::quantum::coherent_field::QuantumEventPayload::StateTransfer { 
+                            qubit_ids, quantum_state, quantum_signature 
+                        } => {
+                            crate::distributed::quantum_protocol::QuantumEventPayload::StateTransfer {
+                                qubit_ids,
+                                quantum_state,
+                                quantum_signature,
+                            }
+                        },
+                    },
+                };
+                
+                let _ = event_tx.send(protocol_event).await;
+            }
+        });
+        
+        tx
     }
     
     /// Запускает обработчик квантовых событий
@@ -196,13 +252,27 @@ impl TriadQuantumPeer {
                                     duration_us
                                 );
                             },
-                            QuantumEventPayload::Entanglement { 
-                                local_qubits, remote_peer, remote_qubits, entanglement_type 
-                            } => {
+                            QuantumEventPayload::Entanglement { local_qubits, remote_peer, remote_qubits, entanglement_type, .. } => {
                                 // Установление запутанности между узлами
                                 let mut field = quantum_field.write().await;
+                                
+                                // Конвертируем тип запутанности
+                                let field_entanglement_type = match entanglement_type {
+                                    crate::distributed::quantum_protocol::EntanglementType::Bell => 
+                                        crate::quantum::coherent_field::EntanglementType::Bell,
+                                    crate::distributed::quantum_protocol::EntanglementType::GHZ => 
+                                        crate::quantum::coherent_field::EntanglementType::GHZ,
+                                    crate::distributed::quantum_protocol::EntanglementType::Cluster => 
+                                        crate::quantum::coherent_field::EntanglementType::Cluster,
+                                    crate::distributed::quantum_protocol::EntanglementType::Partial(p) => 
+                                        crate::quantum::coherent_field::EntanglementType::Partial(*p),
+                                };
+                                
                                 if let Err(e) = field.entangle_qubits(
-                                    local_qubits, remote_peer, remote_qubits, *entanglement_type
+                                    &local_qubits,
+                                    &remote_peer,
+                                    &remote_qubits,
+                                    field_entanglement_type
                                 ).await {
                                     error!("Ошибка запутывания: {:?}", e);
                                 }
@@ -604,7 +674,7 @@ impl QuantumPeer for TriadQuantumPeer {
                                     &local_qubit_ids, 
                                     remote_id, 
                                     &remote_qubit_ids, 
-                                    EntanglementType::Bell
+                                    crate::quantum::coherent_field::EntanglementType::Bell
                                 ).await {
                                     error!("Ошибка запутывания с {}: {:?}", remote_id, e);
                                 }

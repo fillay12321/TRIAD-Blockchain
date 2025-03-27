@@ -9,7 +9,8 @@ fn main() {
     println!("Запуск локальной версии TRIAD...");
     
     // Создаем симулятор квантовой системы
-    let mut simulator = QrustSimulator::new(5); // 5 кубитов
+    let node_id = "test_node".to_string();
+    let mut simulator = QrustSimulator::new(node_id, 5, false).expect("Не удалось создать симулятор"); 
     println!("Создан квантовый симулятор с 5 кубитами");
     
     // Создаем схему запутанных состояний
@@ -28,7 +29,8 @@ fn main() {
     
     // Выполняем схему
     println!("Выполнение квантовой схемы...");
-    let _ = simulator.run_circuit(&circuit);
+    let result = simulator.run_circuit(&circuit).expect("Ошибка выполнения схемы");
+    println!("Схема выполнена, результат: {:?}", result);
     
     // Получаем итоговое состояние
     let state = simulator.get_state();

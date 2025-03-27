@@ -816,6 +816,11 @@ impl QuantumState {
     pub fn qubit_count(&self) -> usize {
         self.qubit_count
     }
+
+    /// Возвращает количество базисных состояний в квантовом состоянии
+    pub fn get_basis_states_count(&self) -> usize {
+        self.amplitudes.len()
+    }
 }
 
 impl Index<usize> for QuantumState {

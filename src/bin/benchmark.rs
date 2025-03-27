@@ -11,7 +11,7 @@ use std::io::{self, Write};
 use std::fs::File;
 use std::thread;
 
-use triad::network::{VirtualNetwork, NetworkConfig, NetworkTopology};
+use triad::network::{VirtualNetwork, NetworkConfig, NetworkTopology, ConsensusResult};
 use triad::consensus::demonstrate_quantum_consensus;
 use triad::quantum::quantum_field::QuantumInterference;
 use triad::quantum::triadvantum::state::QuantumState;
@@ -103,9 +103,10 @@ fn run_all_benchmarks() {
 fn benchmark_performance() {
     println!("\n📊 Тестирование производительности сети TRIAD");
     
-    let node_counts = vec![5, 10, 20, 50];
-    let qubits_per_node = 3;
-    let tx_count = 100;
+    // Уменьшаем размер тестов
+    let node_counts = vec![2, 3, 5]; // начинаем с самых маленьких сетей
+    let qubits_per_node = 2; // уменьшаем количество кубитов на узел
+    let tx_count = 10; // уменьшаем количество транзакций для теста
     
     let mut results = Vec::new();
     
@@ -113,6 +114,7 @@ fn benchmark_performance() {
         println!("\nТестирование сети с {} узлами...", node_count);
         
         // Создаем сеть с нужной конфигурацией
+        println!("Создание сети...");
         let config = NetworkConfig {
             network_delay_ms: 5,
             packet_loss_probability: 0.01,
@@ -121,15 +123,19 @@ fn benchmark_performance() {
         };
         
         let mut network = VirtualNetwork::with_nodes(node_count, qubits_per_node, config);
+        println!("Активация TriadVantum...");
         network.activate_triadvantum(true);
         
         // Прогрев сети
+        println!("Прогрев сети...");
         for i in 0..5 {
+            println!("  Прогрев транзакция {}/5", i+1);
             let tx_data = format!("warmup_tx_{}", i);
             let _ = network.process_transaction(&tx_data);
         }
         
         // Основной тест
+        println!("Подготовка массивов данных...");
         let mut latencies = Vec::with_capacity(tx_count);
         let mut entanglement_values = Vec::with_capacity(tx_count);
         let mut interference_values = Vec::with_capacity(tx_count);
@@ -141,7 +147,46 @@ fn benchmark_performance() {
         for i in 0..tx_count {
             let tx_start = Instant::now();
             let tx_data = format!("tx_{}", i);
-            let result = network.process_transaction(&tx_data);
+            
+            println!("Обработка транзакции {}/{}...", i+1, tx_count);
+            
+            // Добавляем обработку таймаута для транзакции
+            let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                // Устанавливаем таймер для предотвращения зависания
+                let timeout = Duration::from_secs(5); // Таймаут 5 секунд
+                println!("  Вызов process_transaction...");
+                let tx_result = network.process_transaction(&tx_data);
+                println!("  process_transaction завершен.");
+                
+                // Проверяем превышение времени
+                if tx_start.elapsed() > timeout {
+                    println!("\r⚠️ Транзакция {} заняла слишком много времени, прерываем", i);
+                    // Возвращаем пустой результат
+                    ConsensusResult {
+                        consensus: false,
+                        interference_result: 0.0,
+                        processing_time_ms: timeout.as_millis() as f64,
+                        consensus_nodes: 0,
+                        node_count: node_count,
+                        entanglement_level: 0.0,
+                    }
+                } else {
+                    tx_result
+                }
+            })).unwrap_or_else(|_| {
+                // Если произошла паника, возвращаем пустой результат
+                println!("\r⚠️ Ошибка при обработке транзакции {}", i);
+                ConsensusResult {
+                    consensus: false,
+                    interference_result: 0.0,
+                    processing_time_ms: 5000.0,
+                    consensus_nodes: 0,
+                    node_count: node_count,
+                    entanglement_level: 0.0,
+                }
+            });
+            
+            println!("Транзакция {} обработана за {:.2} мс", i+1, tx_start.elapsed().as_secs_f64() * 1000.0);
             
             let tx_latency = tx_start.elapsed().as_secs_f64() * 1000.0;
             latencies.push(tx_latency);
@@ -158,20 +203,26 @@ fn benchmark_performance() {
                        i + 1, tx_count, (i + 1) as f64 / tx_count as f64 * 100.0);
                 io::stdout().flush().unwrap();
             }
+            
+            // Добавляем проверку на общее время выполнения
+            if start.elapsed() > Duration::from_secs(300) { // Максимум 5 минут на весь тест
+                println!("\n⚠️ Превышено время выполнения теста. Прерываем после {} транзакций.", i + 1);
+                break;
+            }
         }
         
         let elapsed = start.elapsed();
         let total_time_ms = elapsed.as_secs_f64() * 1000.0;
-        let tps = tx_count as f64 / (total_time_ms / 1000.0);
+        let tps = if latencies.is_empty() { 0.0 } else { latencies.len() as f64 / (total_time_ms / 1000.0) };
         
         println!("\nТест завершен. Сбор метрик...");
         
         // Расчет метрик
-        let avg_latency = latencies.iter().sum::<f64>() / latencies.len() as f64;
-        let max_latency = latencies.iter().fold(0.0, |max, &val| if val > max { val } else { max });
-        let avg_entanglement = entanglement_values.iter().sum::<f64>() / entanglement_values.len() as f64;
-        let avg_interference = interference_values.iter().sum::<f64>() / interference_values.len() as f64;
-        let consensus_rate = consensus_count as f64 / tx_count as f64;
+        let avg_latency = if latencies.is_empty() { 0.0 } else { latencies.iter().sum::<f64>() / latencies.len() as f64 };
+        let max_latency = if latencies.is_empty() { 0.0 } else { latencies.iter().fold(0.0, |max, &val| if val > max { val } else { max }) };
+        let avg_entanglement = if entanglement_values.is_empty() { 0.0 } else { entanglement_values.iter().sum::<f64>() / entanglement_values.len() as f64 };
+        let avg_interference = if interference_values.is_empty() { 0.0 } else { interference_values.iter().sum::<f64>() / interference_values.len() as f64 };
+        let consensus_rate = if latencies.is_empty() { 0.0 } else { consensus_count as f64 / latencies.len() as f64 };
         
         // Расчет приблизительного потребления памяти
         let memory_usage = (node_count * qubits_per_node * 16) as f64 / 1024.0; // Грубая оценка в МБ

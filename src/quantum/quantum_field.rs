@@ -399,8 +399,22 @@ impl QuantumField {
                 // Если есть другие узлы, выбираем случайный для запутывания
                 if self.node_to_qubits.len() > 1 {
                     let mut other_node_idx = node_idx;
-                    while other_node_idx == node_idx {
+                    let mut attempts = 0;
+                    // Ограничиваем количество попыток, чтобы избежать бесконечного цикла
+                    while other_node_idx == node_idx && attempts < 10 {
                         other_node_idx = (hash[2] as usize) % self.node_to_qubits.len();
+                        attempts += 1;
+                    }
+                    
+                    // Если после всех попыток не удалось выбрать другой узел, используем
+                    // первый отличный от текущего или просто следующий
+                    if other_node_idx == node_idx {
+                        for (idx, _) in &self.node_to_qubits {
+                            if *idx != node_idx {
+                                other_node_idx = *idx;
+                                break;
+                            }
+                        }
                     }
                     
                     if let Some(other_qubits) = self.node_to_qubits.get(&other_node_idx) {
@@ -481,8 +495,22 @@ impl QuantumField {
                 // Если есть другие узлы, выбираем случайный для запутывания
                 if self.node_to_qubits.len() > 1 {
                     let mut other_node_idx = node_idx;
-                    while other_node_idx == node_idx {
+                    let mut attempts = 0;
+                    // Ограничиваем количество попыток, чтобы избежать бесконечного цикла
+                    while other_node_idx == node_idx && attempts < 10 {
                         other_node_idx = (hash[2] as usize) % self.node_to_qubits.len();
+                        attempts += 1;
+                    }
+                    
+                    // Если после всех попыток не удалось выбрать другой узел, используем
+                    // первый отличный от текущего или просто следующий
+                    if other_node_idx == node_idx {
+                        for (idx, _) in &self.node_to_qubits {
+                            if *idx != node_idx {
+                                other_node_idx = *idx;
+                                break;
+                            }
+                        }
                     }
                     
                     if let Some(other_qubits) = self.node_to_qubits.get(&other_node_idx) {

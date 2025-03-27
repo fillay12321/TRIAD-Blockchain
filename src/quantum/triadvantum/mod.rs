@@ -114,7 +114,7 @@ pub fn run_local_example(qubit_count: usize) {
                 // Выводим результаты
                 println!("\nРезультаты симуляции:");
                 println!("Количество кубитов: {}", state.qubit_count);
-                println!("Базисных состояний: {}", state.amplitudes.len());
+                println!("Базисных состояний: {}", state.get_basis_states_count());
                 
                 // Проверяем состояния кубитов
                 println!("\nСостояния кубитов:");

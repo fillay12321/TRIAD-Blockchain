@@ -1,0 +1,50 @@
+[
+  {
+    "node_count": 2,
+    "qubits_per_node": 2,
+    "transaction_count": 10,
+    "topology": "FullMesh",
+    "total_time_ms": 2.727569,
+    "transactions_per_second": 3666.268387710815,
+    "avg_latency_ms": 0.2708004,
+    "max_latency_ms": 0.387475,
+    "avg_entanglement": 1.0,
+    "avg_interference": 1.0,
+    "consensus_rate": 1.0,
+    "memory_usage_mb": 0.0625,
+    "relative_energy_consumption": 0.021,
+    "estimated_large_scale_tps": 146650735.5084326
+  },
+  {
+    "node_count": 3,
+    "qubits_per_node": 2,
+    "transaction_count": 10,
+    "topology": "FullMesh",
+    "total_time_ms": 29.825042,
+    "transactions_per_second": 335.28871476526336,
+    "avg_latency_ms": 2.9812665000000003,
+    "max_latency_ms": 5.044517999999999,
+    "avg_entanglement": 1.0,
+    "avg_interference": 1.0,
+    "consensus_rate": 1.0,
+    "memory_usage_mb": 0.09375,
+    "relative_energy_consumption": 0.031,
+    "estimated_large_scale_tps": 8941032.393740358
+  },
+  {
+    "node_count": 5,
+    "qubits_per_node": 2,
+    "transaction_count": 10,
+    "topology": "FullMesh",
+    "total_time_ms": 2634.998227,
+    "transactions_per_second": 3.7950689672323636,
+    "avg_latency_ms": 263.4981949,
+    "max_latency_ms": 751.930813,
+    "avg_entanglement": 1.0,
+    "avg_interference": 1.0,
+    "consensus_rate": 1.0,
+    "memory_usage_mb": 0.15625,
+    "relative_energy_consumption": 0.051000000000000004,
+    "estimated_large_scale_tps": 60721.10347571782
+  }
+]
