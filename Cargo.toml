@@ -1,0 +1,74 @@
+[package]
+name = "triad"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "test"
+path = "src/bin/test.rs"
+
+[[bin]]
+name = "benchmark"
+path = "src/bin/benchmark.rs"
+
+[[bin]]
+name = "visualizer"
+path = "src/bin/visualizer.rs"
+
+[[bin]]
+name = "quantum_node"
+path = "src/bin/quantum_node.rs"
+
+[dependencies]
+num-complex = { version = "0.4", features = ["serde"] }  # Добавляем поддержку сериализации
+ndarray = "0.15"        # Для работы с многомерными массивами
+rand = "0.8"            # Для генерации случайных чисел
+rayon = "1.5"           # Для параллельных вычислений
+serde = { version = "1.0", features = ["derive"] } # Сериализация
+serde_json = "1.0"      # JSON для обмена данными
+sha2 = "0.10"           # Хеширование SHA-256
+bincode = "1.3"         # Бинарная сериализация для компактных данных
+thiserror = "1.0"       # Удобное создание ошибок
+hashbrown = "0.12"      # Более эффективные хеш-таблицы
+chrono = "0.4"          # Работа с датами и временем
+parking_lot = "0.12"    # Более эффективные мьютексы и RwLock
+uuid = { version = "1.7", features = ["v4", "serde"] } # Для генерации уникальных идентификаторов
+plotters = "0.3"        # Библиотека для визуализации данных
+
+# Зависимости для мониторинга в реальном времени
+tokio = { version = "1.21", features = ["full"] } # Асинхронный runtime
+warp = "0.3"            # Веб-сервер для WebSocket
+tungstenite = "0.17"    # WebSocket протокол
+tokio-stream = "0.1"    # Потоки для Tokio
+futures = "0.3"         # Библиотека для асинхронного программирования
+
+# Зависимости для распределенной квантовой сети
+tokio-tungstenite = "0.17"  # WebSocket для соединений
+async-trait = "0.1"     # Асинхронные трейты
+bs58 = "0.4"            # Кодирование для квантовых сигнатур
+tracing = "0.1"         # Логирование и трассировка
+tracing-subscriber = "0.3" # Подписчик для трассировки
+serde_bytes = "0.11"    # Эффективная сериализация бинарных данных
+
+# Квантовые библиотеки
+# qip = "0.11.0"          # Удаляем внешнюю библиотеку квантовых вычислений RustQIP
+ndarray-linalg = "0.16" # Линейная алгебра на базе ndarray (для квантовых операторов)
+
+# Для распределенных вычислений
+crossbeam = "0.8"       # Инструменты для конкурентного программирования
+
+# Для мониторинга метрик
+prometheus = "0.13"     # Экспорт метрик в формате Prometheus
+
+[features]
+default = ["classical-simulation"]
+classical-simulation = []
+hardware-acceleration = ["ndarray/blas"]
+distributed = []
+
+[profile.release]
+opt-level = 3           # Максимальная оптимизация
+lto = true              # Оптимизация на уровне связывания
+codegen-units = 1       # Максимизируем оптимизацию между модулями
+panic = "abort"         # Упрощение обработки ошибок для производительности
+debug = false           # Отключаем отладочную информацию
