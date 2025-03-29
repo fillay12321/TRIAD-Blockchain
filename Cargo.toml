@@ -2,73 +2,61 @@
 name = "triad"
 version = "0.1.0"
 edition = "2021"
-
-[[bin]]
-name = "test"
-path = "src/bin/test.rs"
-
-[[bin]]
-name = "benchmark"
-path = "src/bin/benchmark.rs"
-
-[[bin]]
-name = "visualizer"
-path = "src/bin/visualizer.rs"
-
-[[bin]]
-name = "quantum_node"
-path = "src/bin/quantum_node.rs"
+authors = ["Михаил"]
+description = "TRIAD - Квантово-вдохновленная распределенная сеть следующего поколения"
+license = "MIT"
+readme = "README.md"
+build = "build.rs"  # Скрипт сборки для компиляции QuEST
 
 [dependencies]
-num-complex = { version = "0.4", features = ["serde"] }  # Добавляем поддержку сериализации
-ndarray = "0.15"        # Для работы с многомерными массивами
-rand = "0.8"            # Для генерации случайных чисел
-rayon = "1.5"           # Для параллельных вычислений
-serde = { version = "1.0", features = ["derive"] } # Сериализация
-serde_json = "1.0"      # JSON для обмена данными
-sha2 = "0.10"           # Хеширование SHA-256
-bincode = "1.3"         # Бинарная сериализация для компактных данных
-thiserror = "1.0"       # Удобное создание ошибок
-hashbrown = "0.12"      # Более эффективные хеш-таблицы
-chrono = "0.4"          # Работа с датами и временем
-parking_lot = "0.12"    # Более эффективные мьютексы и RwLock
-uuid = { version = "1.7", features = ["v4", "serde"] } # Для генерации уникальных идентификаторов
-plotters = "0.3"        # Библиотека для визуализации данных
+# Математические библиотеки
+num-complex = "0.4.3"  # Для работы с комплексными числами (квантовые амплитуды)
+nalgebra = "0.32.3"    # Для матричных операций
+rand = "0.8.5"         # Для генерации случайных чисел (измерения)
 
-# Зависимости для мониторинга в реальном времени
-tokio = { version = "1.21", features = ["full"] } # Асинхронный runtime
-warp = "0.3"            # Веб-сервер для WebSocket
-tungstenite = "0.17"    # WebSocket протокол
-tokio-stream = "0.1"    # Потоки для Tokio
-futures = "0.3"         # Библиотека для асинхронного программирования
+# Сериализация/десериализация
+serde = { version = "1.0.163", features = ["derive"] }
+serde_json = "1.0.96"
 
-# Зависимости для распределенной квантовой сети
-tokio-tungstenite = "0.17"  # WebSocket для соединений
-async-trait = "0.1"     # Асинхронные трейты
-bs58 = "0.4"            # Кодирование для квантовых сигнатур
-tracing = "0.1"         # Логирование и трассировка
-tracing-subscriber = "0.3" # Подписчик для трассировки
-serde_bytes = "0.11"    # Эффективная сериализация бинарных данных
+# Сетевые библиотеки
+tokio = { version = "1.28.0", features = ["full"] }  # Асинхронный runtime
+libp2p = { version = "0.51.0", features = ["tcp", "noise"] }  # P2P коммуникации
 
-# Квантовые библиотеки
-# qip = "0.11.0"          # Удаляем внешнюю библиотеку квантовых вычислений RustQIP
-ndarray-linalg = "0.16" # Линейная алгебра на базе ndarray (для квантовых операторов)
+# Утилиты
+log = "0.4.17"         # Логирование
+env_logger = "0.10.0"  # Конфигурация логирования
+thiserror = "1.0.40"   # Обработка ошибок
 
-# Для распределенных вычислений
-crossbeam = "0.8"       # Инструменты для конкурентного программирования
+# FFI-интеграция для работы с C-библиотекой QuEST
+libc = "0.2.151"       # Для работы с C-типами
+once_cell = "1.17.1"   # Для безопасной ленивой инициализации
 
-# Для мониторинга метрик
-prometheus = "0.13"     # Экспорт метрик в формате Prometheus
+# Дополнительные зависимости
+clap = { version = "4.4.10", features = ["derive"] }
+plotters = "0.3.5"
 
-[features]
-default = ["classical-simulation"]
-classical-simulation = []
-hardware-acceleration = ["ndarray/blas"]
-distributed = []
+[build-dependencies]
+cc = "1.0.83"          # Для компиляции C-кода QuEST
+
+[dev-dependencies]
+criterion = "0.5.1"    # Для бенчмарков
+
+[lib]
+name = "triad"
+path = "src/lib.rs"
+
+[[bin]]
+name = "triad"
+path = "src/main.rs"
+
+[[example]]
+name = "random_number"
+path = "src/examples/random_number.rs"
+
+[[example]]
+name = "deutsch_algorithm"
+path = "src/examples/deutsch_algorithm.rs"
 
 [profile.release]
-opt-level = 3           # Максимальная оптимизация
-lto = true              # Оптимизация на уровне связывания
-codegen-units = 1       # Максимизируем оптимизацию между модулями
-panic = "abort"         # Упрощение обработки ошибок для производительности
-debug = false           # Отключаем отладочную информацию
+opt-level = 3
+lto = true 

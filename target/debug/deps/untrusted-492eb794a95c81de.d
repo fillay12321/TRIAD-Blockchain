@@ -1,0 +1,10 @@
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/libuntrusted-492eb794a95c81de.rmeta: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/input.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/no_panic.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/reader.rs
+
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/libuntrusted-492eb794a95c81de.rlib: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/input.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/no_panic.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/reader.rs
+
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/untrusted-492eb794a95c81de.d: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/input.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/no_panic.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/reader.rs
+
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/lib.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/input.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/no_panic.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/untrusted-0.9.0/src/reader.rs:

@@ -1,0 +1,249 @@
+warning: unused import: `std::process::Command`
+ --> build.rs:5:5
+  |
+5 | use std::process::Command;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::io::Write`
+ --> build.rs:7:5
+  |
+7 | use std::io::Write;
+  |     ^^^^^^^^^^^^^^
+
+warning: function `create_stub_files` is never used
+  --> build.rs:99:4
+   |
+99 | fn create_stub_files(quest_path: &Path) {
+   |    ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: `triad` (build script) generated 3 warnings
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/QuEST.c:1650:48: warning: unused parameter 'env' [-Wunused-parameter]
+warning: triad@0.1.0: void destroyDiagonalOp(DiagonalOp op, QuESTEnv env) {
+warning: triad@0.1.0:                                                ^
+warning: triad@0.1.0: 1 warning generated.
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/QuEST_qasm.c:721:164: warning: unused parameter 'numParams' [-Wunused-parameter]
+warning: triad@0.1.0: void qasm_recordNamedPhaseFunc(Qureg qureg, int* qubits, int* numQubitsPerReg, int numRegs, enum bitEncoding encoding, enum phaseFunc funcName, qreal* params, int numParams, long long int* overrideInds, qreal* overridePhases, int numOverrides) {
+warning: triad@0.1.0:                                                                                                                                                                    ^
+warning: triad@0.1.0: 1 warning generated.
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:43:27: warning: unused parameter 'qureg' [-Wunused-parameter]
+warning: triad@0.1.0: void copyStateToGPU(Qureg qureg) {
+warning: triad@0.1.0:                           ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:46:29: warning: unused parameter 'qureg' [-Wunused-parameter]
+warning: triad@0.1.0: void copyStateFromGPU(Qureg qureg) {
+warning: triad@0.1.0:                             ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:49:39: warning: unused parameter 'qureg' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_copySubstateToGPU(Qureg qureg, long long int startInd, long long int numAmps) {
+warning: triad@0.1.0:                                       ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:49:60: warning: unused parameter 'startInd' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_copySubstateToGPU(Qureg qureg, long long int startInd, long long int numAmps) {
+warning: triad@0.1.0:                                                            ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:49:84: warning: unused parameter 'numAmps' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_copySubstateToGPU(Qureg qureg, long long int startInd, long long int numAmps) {
+warning: triad@0.1.0:                                                                                    ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:52:41: warning: unused parameter 'qureg' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_copySubstateFromGPU(Qureg qureg, long long int startInd, long long int numAmps) {
+warning: triad@0.1.0:                                         ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:52:62: warning: unused parameter 'startInd' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_copySubstateFromGPU(Qureg qureg, long long int startInd, long long int numAmps) {
+warning: triad@0.1.0:                                                              ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:52:86: warning: unused parameter 'numAmps' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_copySubstateFromGPU(Qureg qureg, long long int startInd, long long int numAmps) {
+warning: triad@0.1.0:                                                                                      ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:1412:41: warning: unused parameter 'op' [-Wunused-parameter]
+warning: triad@0.1.0: void agnostic_syncDiagonalOp(DiagonalOp op) {
+warning: triad@0.1.0:                                         ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:2472:13: warning: unused parameter 'targetQubit' [-Wunused-parameter]
+warning: triad@0.1.0:         int targetQubit,
+warning: triad@0.1.0:             ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:3777:77: warning: unused parameter 'measureQubit' [-Wunused-parameter]
+warning: triad@0.1.0: void statevec_collapseToKnownProbOutcomeDistributedRenorm (Qureg qureg, int measureQubit, qreal totalProbability)
+warning: triad@0.1.0:                                                                             ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu.c:4377:24: warning: unused parameter 'numParams' [-Wunused-parameter]
+warning: triad@0.1.0:     qreal* params, int numParams,
+warning: triad@0.1.0:                        ^
+warning: triad@0.1.0: 12 warnings generated.
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu_local.c:184:28: warning: unused parameter 'env' [-Wunused-parameter]
+warning: triad@0.1.0: void syncQuESTEnv(QuESTEnv env){
+warning: triad@0.1.0:                            ^
+warning: triad@0.1.0: vendor/QuEST_full/QuEST/src/CPU/QuEST_cpu_local.c:209:36: warning: unused parameter 'env' [-Wunused-parameter]
+warning: triad@0.1.0: void getEnvironmentString(QuESTEnv env, char str[200]){
+warning: triad@0.1.0:                                    ^
+warning: triad@0.1.0: 2 warnings generated.
+warning: triad@0.1.0: src/utils.c:18:50: warning: unused parameter 'key_length' [-Wunused-parameter]
+warning: triad@0.1.0: void init_by_array(unsigned long init_key[], int key_length) {
+warning: triad@0.1.0:                                                  ^
+warning: triad@0.1.0: 1 warning generated.
+warning: unused import: `std::f64::consts::PI`
+ --> src/core/gates.rs:7:5
+  |
+7 | use std::f64::consts::PI;
+  |     ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `c_void`
+ --> src/quest/ffi.rs:9:12
+  |
+9 | use libc::{c_void, c_int, c_longlong, c_char, c_double};
+  |            ^^^^^^
+
+warning: unused import: `std::ffi::CString`
+  --> src/quest/ffi.rs:10:5
+   |
+10 | use std::ffi::CString;
+   |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::ptr`
+  --> src/quest/ffi.rs:12:5
+   |
+12 | use std::ptr;
+   |     ^^^^^^^^
+
+warning: unused import: `crate::core::qubit::Qubit`
+  --> src/quest/mod.rs:11:5
+   |
+11 | use crate::core::qubit::Qubit;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Duration`
+ --> src/examples/random_number.rs:8:17
+  |
+8 | use std::time::{Duration, Instant};
+  |                 ^^^^^^^^
+
+warning: unused import: `debug`
+ --> src/examples/deutsch_algorithm.rs:6:17
+  |
+6 | use log::{info, debug};
+  |                 ^^^^^
+
+warning: unused imports: `BasicGate`, `Gate`, and `TwoQubitGate`
+ --> src/examples/deutsch_algorithm.rs:9:26
+  |
+9 | use crate::core::gates::{Gate, BasicGate, TwoQubitGate};
+  |                          ^^^^  ^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: unused import: `crate::core::gates::*`
+ --> src/examples/advanced_algorithms.rs:9:5
+  |
+9 | use crate::core::gates::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::core::qubit::Qubit`
+  --> src/examples/advanced_algorithms.rs:10:5
+   |
+10 | use crate::core::qubit::Qubit;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::f64::consts::PI`
+  --> src/examples/advanced_algorithms.rs:11:5
+   |
+11 | use std::f64::consts::PI;
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::fmt::Debug`
+  --> src/examples/advanced_algorithms.rs:14:5
+   |
+14 | use std::fmt::Debug;
+   |     ^^^^^^^^^^^^^^^
+
+warning: unused import: `super::*`
+   --> src/api.rs:212:9
+    |
+212 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused variable: `state`
+   --> src/api.rs:175:13
+    |
+175 |         let state = self.simulator.get_state();
+    |             ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: field `env` is never read
+  --> src/quest/mod.rs:22:5
+   |
+18 | pub struct QuESTSimulator {
+   |            -------------- field in this struct
+...
+22 |     env: SafeQuESTEnv,
+   |     ^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: function `calcProbOfOutcome` is never used
+   --> src/quest/ffi.rs:409:8
+    |
+409 |     fn calcProbOfOutcome(qureg: Qureg, measureQubit: c_int, outcome: c_int) -> c_double;
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: function `getNumAmps` is never used
+   --> src/quest/ffi.rs:413:8
+    |
+413 |     fn getNumAmps(qureg: Qureg) -> c_longlong;
+    |        ^^^^^^^^^^
+
+warning: function `multiControlledUnitary` is never used
+   --> src/quest/ffi.rs:425:8
+    |
+425 |     fn multiControlledUnitary(qureg: Qureg, controlQubits: *const c_int, numControlQubits: c_int, 
+    |        ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `writeStateToFile` is never used
+   --> src/quest/ffi.rs:429:8
+    |
+429 |     fn writeStateToFile(qureg: Qureg, filename: *const c_char) -> c_int;
+    |        ^^^^^^^^^^^^^^^^
+
+warning: function `readStateFromFile` is never used
+   --> src/quest/ffi.rs:430:8
+    |
+430 |     fn readStateFromFile(qureg: Qureg, filename: *const c_char) -> c_int;
+    |        ^^^^^^^^^^^^^^^^^
+
+warning: function `main` is never used
+   --> src/examples/random_number.rs:112:4
+    |
+112 | fn main() {
+    |    ^^^^
+
+warning: `triad` (lib) generated 21 warnings (run `cargo fix --lib -p triad` to apply 13 suggestions)
+warning: unused import: `triad::quest::QuESTSimulator`
+ --> src/main.rs:8:5
+  |
+8 | use triad::quest::QuESTSimulator;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `triad::core::quantum_simulator::QuantumSimulator`
+ --> src/main.rs:9:5
+  |
+9 | use triad::core::quantum_simulator::QuantumSimulator;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `is_entangled` is never used
+   --> src/main.rs:315:8
+    |
+315 |     fn is_entangled(qubit1_results: &[bool], qubit2_results: &[bool]) -> bool {
+    |        ^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: `triad` (bin "triad") generated 3 warnings (run `cargo fix --bin "triad"` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/triad quest`
+=== TRIAD v0.1.0 ===
+Квантово-вдохновленная распределенная сеть следующего поколения
+---
+
+Демонстрация квантовой запутанности с использованием QuEST:
+Квантовая запутанность - это явление, при котором квантовые состояния двух или более частиц становятся взаимозависимыми.
+
+Инициализация квантового симулятора QuEST с двумя кубитами...
+Invalid number of qubits: -1328816504

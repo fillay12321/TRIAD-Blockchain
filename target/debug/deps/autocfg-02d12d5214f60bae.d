@@ -1,0 +1,10 @@
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/libautocfg-02d12d5214f60bae.rmeta: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/error.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/rustc.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/version.rs
+
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/libautocfg-02d12d5214f60bae.rlib: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/error.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/rustc.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/version.rs
+
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/autocfg-02d12d5214f60bae.d: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/error.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/rustc.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/version.rs
+
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/lib.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/error.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/rustc.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/autocfg-1.4.0/src/version.rs:

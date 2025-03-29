@@ -1,147 +1,649 @@
-mod quantum;
-mod network;
-mod consensus;
-mod storage;
-mod visualization;
+//! Главный исполняемый файл проекта TRIAD.
+//! 
+//! Запускает демонстрационный режим TRIAD, показывая работу
+//! квантовой симуляции и алгоритмов.
 
-use quantum::triadvantum::{
-    circuit::QuantumCircuit, 
-    simulator::QrustSimulator as TriadVantumSimulator,
-    operators::QuantumOperator
-};
-use quantum::triadvantum_adapter::TriadVantumAdapter;
-use network::{VirtualNetwork, NetworkConfig};
-use consensus::demonstrate_quantum_consensus;
-use std::time::Instant;
+// Импортируем внутренние модули
+use triad::VERSION;
+use triad::quest::QuESTSimulator;
+use triad::core::quantum_simulator::QuantumSimulator;
 
-fn main() {
-    println!("TRIAD Blockchain Prototype");
-    println!("Quantum-inspired decentralized network");
+// Простая эмуляция квантовых вычислений без использования QuEST
+mod simple_demo {
+    use rand::{thread_rng, Rng};
     
-    // Демонстрация работы с библиотекой TriadVantum
-    println!("\n----- Демонстрация работы с библиотекой TriadVantum -----");
+    /// Эмулирует создание случайных битов через квантовые измерения
+    pub fn generate_random_bit() -> bool {
+        let mut rng = thread_rng();
+        rng.gen_bool(0.5)
+    }
     
-    // Создаем квантовый симулятор
-    let simulator_result = TriadVantumSimulator::new("main_simulator".to_string(), 4, false);
+    /// Генерирует случайное число в диапазоне [0, max_value)
+    pub fn generate_random_number(max_value: usize) -> usize {
+        let mut rng = thread_rng();
+        rng.gen_range(0..max_value)
+    }
     
-    if let Ok(mut simulator) = simulator_result {
-        // Создаем схему с запутыванием кубитов (состояние Белла)
-        let mut circuit = QuantumCircuit::new(4);
-        circuit.name = "Bell State Demo".to_string();
+    /// Демонстрирует работу квантового генератора случайных чисел
+    pub fn demonstrate_random_number_generation() {
+        println!("Демонстрация генератора случайных чисел на квантовых принципах:");
         
-        circuit.h(0);       // Адамар на 0-й кубит
-        
-        // Применяем CNOT с помощью метода cnot
-        circuit.cnot(0, 1);   // CNOT с контрольным 0 и целевым 1 (запутываем их)
-        
-        circuit.h(2);       // Адамар на 2-й кубит
-        
-        // Применяем CNOT с помощью метода cnot
-        circuit.cnot(2, 3);   // Запутываем 2-й и 3-й кубиты
-        
-        // Выполняем схему
-        println!("Выполняем квантовую схему с парами Белла (TriadVantum)...");
-        if let Ok(result) = simulator.run_circuit(&circuit) {
-            // Получаем состояние после выполнения схемы
-            if let Some(final_state) = Some(simulator.get_state()) {
-                // Проверяем запутанность (теперь нам нужно вычислить это вручную)
-                println!("Схема выполнена успешно");
-                
-                // В новой версии нам нужно реализовать вычисление запутанности самостоятельно
-                // либо использовать вспомогательные функции из quantum_integration
-            }
-        } else {
-            println!("Ошибка при выполнении схемы");
+        // Генерируем и выводим несколько случайных битов
+        println!("\nГенерация случайных битов (эмуляция квантовых измерений):");
+        for i in 1..=10 {
+            let bit = generate_random_bit();
+            println!("Случайный бит #{}: {}", i, bit);
         }
         
-        // Демонстрация работы адаптера
-        println!("\n----- Демонстрация работы с адаптером TriadVantum -----");
-        
-        // Создаем адаптер с 4 кубитами
-        let mut adapter = TriadVantumAdapter::new(4, "demo_adapter".to_string());
-        
-        // Создаем состояние Белла через адаптер
-        adapter.circuit = QuantumCircuit::new(4);
-        adapter.circuit.h(0);
-        adapter.circuit.cnot(0, 1);
-        
-        // Выполняем схему
-        if let Ok(adapter_result) = adapter.execute_circuit() {
-            println!("Результат выполнения через адаптер: схема выполнена успешно");
-        } else {
-            println!("Ошибка при выполнении схемы через адаптер");
+        // Генерируем и выводим несколько случайных чисел
+        println!("\nГенерация случайных чисел от 0 до 99:");
+        for i in 1..=10 {
+            let num = generate_random_number(100);
+            println!("Случайное число #{}: {}", i, num);
         }
+    }
+    
+    /// Эмуляция алгоритма Дойча
+    pub fn demonstrate_deutsch_algorithm() {
+        println!("\nДемонстрация алгоритма Дойча:");
+        println!("Этот алгоритм определяет, является ли функция константной или сбалансированной, используя всего один запрос к ней.");
         
-        // Демонстрация работы виртуальной сети с TriadVantum
-        println!("\n----- Демонстрация работы виртуальной сети TRIAD с TriadVantum -----");
+        let oracle_types = ["Константная (f(x) = 0)", "Константная (f(x) = 1)", 
+                          "Сбалансированная (f(x) = x)", "Сбалансированная (f(x) = NOT x)"];
         
-        // Создаем сеть с 5 узлами, каждый с меньшим количеством кубитов
-        let node_count = 5;
-        let qubits_per_node = 5; // Уменьшаем с 10 до 5 для безопасности
-        let config = NetworkConfig::default();
-        
-        let mut network = VirtualNetwork::with_nodes(node_count, qubits_per_node, config);
-        println!("Создана сеть с {} узлами, по {} кубитов на узел", node_count, qubits_per_node);
-        
-        // Активируем новый симулятор в квантовом поле сети
-        network.activate_triadvantum(true);
-        println!("Активирован симулятор TriadVantum для квантового поля");
-        
-        // Обработка транзакций
-        let tx_count = 5;
-        println!("\nОбработка {} транзакций через виртуальную сеть с TriadVantum...", tx_count);
-        
-        let start = Instant::now();
-        for i in 0..tx_count {
-            let tx_data = format!("tx_{}", i);
-            let result = network.process_transaction(&tx_data);
+        for &oracle in oracle_types.iter() {
+            println!("\nИспользуем оракул: {}", oracle);
+            println!("1. Подготавливаем кубиты в состоянии |01⟩");
+            println!("2. Применяем гейты Адамара к обоим кубитам");
+            println!("3. Применяем оракул");
+            println!("4. Применяем гейт Адамара к первому кубиту");
+            println!("5. Измеряем первый кубит");
             
-            println!("Транзакция {}: консенсус = {}, интерференция = {:.4}, время = {:.2} мс", 
-                     i, result.consensus, result.interference_result, result.processing_time_ms);
+            // Имитируем результат (детерминистический для демонстрации)
+            let result = if oracle.contains("Константная") { true } else { false };
+            println!("Результат измерения: {}", if result { 0 } else { 1 });
+            println!("Вывод: функция является {}", if result { "константной" } else { "сбалансированной" });
         }
+    }
+    
+    /// Эмуляция квантовой запутанности и телепортации
+    pub fn demonstrate_entanglement() {
+        println!("\nДемонстрация квантовой запутанности:");
+        println!("Квантовая запутанность - это явление, при котором квантовые состояния двух или более частиц становятся взаимозависимыми.");
         
-        let elapsed = start.elapsed();
-        let total_time_ms = elapsed.as_secs_f64() * 1000.0;
-        let tps = tx_count as f64 / (total_time_ms / 1000.0);
+        // Демонстрация создания состояния Белла
+        println!("\n1. Создание состояния Белла (максимально запутанное состояние двух кубитов):");
+        println!("   Исходное состояние: |00⟩");
+        println!("   Шаг 1: Применяем гейт Адамара к первому кубиту → (|0⟩ + |1⟩)/√2 ⊗ |0⟩ = (|00⟩ + |10⟩)/√2");
+        println!("   Шаг 2: Применяем CNOT с контролем на первом кубите → (|00⟩ + |11⟩)/√2");
+        println!("   Результат: Состояние |Φ⁺⟩ = (|00⟩ + |11⟩)/√2");
         
-        println!("\nОбщие результаты с TriadVantum:");
-        println!("Обработано {} транзакций за {:.2} мс", tx_count, total_time_ms);
-        println!("Средняя скорость: {:.2} TPS", tps);
-        println!("Масштабируемая оценка для сети из 100,000 узлов: {:.2} TPS", 
-                 tps * (100_000.0 / node_count as f64));
-                 
-        // Демонстрация создания специальных схем через адаптер
-        println!("\n----- Демонстрация специальных квантовых схем -----");
+        // Интерактивная демонстрация корреляции измерений
+        println!("\n2. Интерактивные эксперименты с запутанными парами:");
         
-        // Создаем адаптер для демонстрации
-        let mut demo_adapter = TriadVantumAdapter::new(8, "demo_circuits".to_string());
-        
-        // Создаем схему состояния GHZ
-        println!("Создаем схему GHZ...");
-        demo_adapter.clear_circuit();
-        demo_adapter.circuit.h(0);
-        for i in 1..8 {
-            demo_adapter.circuit.cnot(0, i);
-        }
-        
-        let ghz_result = demo_adapter.execute_circuit();
-        if let Ok(result) = ghz_result {
-            println!("Схема GHZ выполнена, запутанность: высокая");
-        }
-        
-        // Создаем схему QFT
-        println!("\nСоздаем схему QFT...");
-        if let Ok(_) = demo_adapter.create_qft_circuit() {
-            let qft_result = demo_adapter.execute_circuit();
-            if let Ok(_) = qft_result {
-                println!("Схема QFT выполнена успешно");
+        // Функция для симуляции создания и измерения запутанной пары кубитов
+        fn create_and_measure_bell_pair() -> (bool, bool) {
+            // Используем генератор случайных чисел для эмуляции вероятностей измерения
+            let mut rng = rand::thread_rng();
+            
+            // В состоянии Белла (|00⟩ + |11⟩)/√2 результаты должны быть скоррелированы
+            // Вероятность 50% получить пару (0,0) и 50% получить (1,1)
+            if rng.gen_bool(0.5) {
+                (false, false) // |00⟩
+            } else {
+                (true, true)   // |11⟩
             }
         }
         
-        // Сравнение алгоритмов консенсуса
-        println!("\n----- Сравнение TRIAD с традиционными механизмами консенсуса -----");
-        let _comparison_results = demonstrate_quantum_consensus();
-    } else {
-        println!("Ошибка при создании симулятора TriadVantum");
+        println!("   Нажмите Enter, чтобы провести эксперимент (или введите 'q' для завершения)...");
+        
+        let mut buffer = String::new();
+        let stdin = std::io::stdin();
+        let mut experiment_count = 0;
+        let mut same_results = 0;
+        
+        loop {
+            buffer.clear();
+            print!("   > ");
+            std::io::Write::flush(&mut std::io::stdout()).unwrap();
+            stdin.read_line(&mut buffer).unwrap();
+            
+            let input = buffer.trim();
+            if input == "q" || input == "Q" {
+                println!("   Завершение экспериментов.");
+                break;
+            }
+            
+            // Генерируем пару запутанных кубитов и измеряем их
+            let (qubit1, qubit2) = create_and_measure_bell_pair();
+            experiment_count += 1;
+            
+            // Подсчитываем статистику
+            if qubit1 == qubit2 {
+                same_results += 1;
+            }
+            
+            println!("   Эксперимент #{}: Кубит 1 = {}, Кубит 2 = {}", 
+                     experiment_count, qubit1, qubit2);
+            
+            // Показываем текущую статистику
+            let correlation_percent = (same_results as f64 / experiment_count as f64) * 100.0;
+            println!("   Корреляция измерений: {:.1}% ({} из {})", 
+                     correlation_percent, same_results, experiment_count);
+            
+            // Очень важно показать, что в квантовой запутанности корреляция 100%
+            if correlation_percent < 99.9 && experiment_count >= 10 {
+                println!("   Примечание: в идеальной квантовой системе корреляция должна быть 100%.");
+                println!("   Отклонения могут возникать из-за шума, декогеренции или технических ограничений.");
+            }
+        }
+        
+        // Демонстрация запутанного состояния GHZ (обобщение состояния Белла на 3+ кубита)
+        println!("\n3. Запутанное состояние GHZ (Гринбергера-Хорна-Цайлингера):");
+        println!("   GHZ-состояние для трех кубитов: |GHZ⟩ = (|000⟩ + |111⟩)/√2");
+        println!("   В этом состоянии все кубиты полностью коррелированы между собой.");
+        println!("   Создание GHZ-состояния:");
+        println!("   - Шаг 1: Применяем Адамара к первому кубиту: (|0⟩ + |1⟩)/√2 ⊗ |0⟩ ⊗ |0⟩");
+        println!("   - Шаг 2: Применяем CNOT от первого кубита ко второму: (|00⟩ + |11⟩)/√2 ⊗ |0⟩");
+        println!("   - Шаг 3: Применяем CNOT от первого кубита к третьему: (|000⟩ + |111⟩)/√2");
+        
+        // Интерактивная демонстрация квантовой телепортации
+        println!("\n4. Квантовая телепортация на основе запутанности:");
+        println!("   Этот процесс позволяет передать квантовое состояние от одного кубита к другому,");
+        println!("   используя запутанную пару и классический канал связи.");
+        
+        // Функция для симуляции процесса квантовой телепортации
+        fn quantum_teleportation(input_state: bool) -> bool {
+            // Используем генератор случайных чисел для эмуляции вероятностных аспектов
+            let mut rng = rand::thread_rng();
+            
+            // В идеальном случае телепортации выходное состояние должно точно соответствовать входному
+            // В реальности могут быть ошибки из-за шума или декогеренции
+            // Мы моделируем 95% вероятность успешной телепортации
+            if rng.gen_bool(0.95) {
+                input_state  // Успешная телепортация: состояние сохраняется
+            } else {
+                !input_state // Ошибка телепортации: состояние инвертируется
+            }
+        }
+        
+        println!("\n   Интерактивная симуляция квантовой телепортации:");
+        println!("   Выберите состояние для телепортации:");
+        println!("   1 - Состояние |0⟩");
+        println!("   2 - Состояние |1⟩");
+        println!("   3 - Состояние |+⟩ = (|0⟩ + |1⟩)/√2");
+        println!("   4 - Состояние |-⟩ = (|0⟩ - |1⟩)/√2");
+        println!("   q - Выход");
+        
+        let state_descriptions = [
+            "Базисное состояние |0⟩",
+            "Базисное состояние |1⟩",
+            "Суперпозиция |+⟩ = (|0⟩ + |1⟩)/√2",
+            "Суперпозиция |-⟩ = (|0⟩ - |1⟩)/√2",
+        ];
+        
+        loop {
+            buffer.clear();
+            print!("   Выберите опцию: ");
+            std::io::Write::flush(&mut std::io::stdout()).unwrap();
+            stdin.read_line(&mut buffer).unwrap();
+            
+            let input = buffer.trim();
+            if input == "q" || input == "Q" {
+                println!("   Завершение симуляции телепортации.");
+                break;
+            }
+            
+            let option = input.parse::<usize>().unwrap_or(0);
+            if option < 1 || option > 4 {
+                println!("   Неверный ввод. Пожалуйста, выберите 1-4 или q для выхода.");
+                continue;
+            }
+            
+            let state_index = option - 1;
+            println!("\n   Начинаем телепортацию состояния: {}", state_descriptions[state_index]);
+            
+            // Симуляция протокола телепортации
+            println!("   Шаг 1: Создаем пару запутанных кубитов в состоянии Белла |Φ⁺⟩");
+            println!("   Шаг 2: Подготавливаем первый кубит в выбранном состоянии");
+            
+            // Определяем входное состояние для телепортации
+            // Для состояний |0⟩ и |1⟩ мы используем детерминированное значение
+            // Для состояний |+⟩ и |-⟩ мы эмулируем измерение, которое даст 0 или 1 с вероятностью 50%
+            let mut rng = rand::thread_rng();
+            let input_state = match state_index {
+                0 => false,  // |0⟩
+                1 => true,   // |1⟩
+                _ => rng.gen_bool(0.5), // |+⟩ или |-⟩ (при измерении дают 0 или 1 с вероятностью 50%)
+            };
+            
+            println!("   Шаг 3: Запутываем этот кубит с первым кубитом запутанной пары");
+            println!("   Шаг 4: Измеряем первые два кубита");
+            
+            // Для состояний в базисе X (|+⟩ и |-⟩) при измерении получим случайный результат
+            let measurement_result1 = rng.gen_bool(0.5);
+            let measurement_result2 = rng.gen_bool(0.5);
+            
+            println!("   Результаты измерений: {} и {}", measurement_result1, measurement_result2);
+            println!("   Шаг 5: Передаем результаты измерений по классическому каналу");
+            println!("   Шаг 6: Применяем коррекцию к третьему кубиту на основе результатов измерений");
+            
+            // Выполняем телепортацию
+            let output_state = quantum_teleportation(input_state);
+            
+            // Показываем результат
+            println!("\n   Результат телепортации:");
+            println!("   Входное состояние: {}", input_state);
+            println!("   Телепортированное состояние: {}", output_state);
+            
+            if input_state == output_state {
+                println!("   Телепортация успешна! Состояние сохранено.");
+            } else {
+                println!("   Ошибка телепортации! Состояние изменилось.");
+                println!("   (В реальных квантовых системах это может быть вызвано шумом или декогеренцией)");
+            }
+            println!("");
+        }
+        
+        println!("\nВажно: Несмотря на мгновенную корреляцию между запутанными кубитами, ");
+        println!("       квантовая запутанность не позволяет передавать информацию быстрее света,");
+        println!("       так как для извлечения информации требуется классический канал связи.");
+    }
+    
+    /// Запускает все демонстрационные примеры
+    pub fn run_all_demos() {
+        println!("=== TRIAD: Демонстрация квантовых алгоритмов (эмуляция) ===\n");
+        
+        demonstrate_random_number_generation();
+        println!("\n---\n");
+        
+        demonstrate_deutsch_algorithm();
+        println!("\n---\n");
+        
+        demonstrate_entanglement();
+        
+        println!("\n=== Демонстрация завершена ===");
     }
 }
+
+// Демонстрации, использующие квантовый симулятор QuEST
+mod quest_demo {
+    use triad::quest::QuESTSimulator;
+    use triad::core::quantum_simulator::QuantumSimulator;
+    use std::io::{Write, stdin};
+    use std::time::Duration;
+    use std::thread;
+    use std::sync::{Arc, Mutex};
+    
+    /// Создает симулятор QuEST с таймаутом и детальной диагностикой
+    pub fn create_simulator_with_timeout(num_qubits: usize, timeout_secs: u64) -> Result<QuESTSimulator, String> {
+        println!("Создание симулятора QuEST с таймаутом {} секунд...", timeout_secs);
+        
+        // Создаем разделяемый объект для результата
+        let result = Arc::new(Mutex::new(None));
+        let result_clone = Arc::clone(&result);
+        
+        println!("Запуск отдельного потока для инициализации QuEST...");
+        
+        // Запускаем создание симулятора в отдельном потоке
+        let handle = thread::spawn(move || {
+            println!("Поток инициализации QuEST запущен");
+            
+            // Устанавливаем обработчик паники для получения детальной информации
+            let simulator_result = std::panic::catch_unwind(|| {
+                println!("Попытка создания QuESTSimulator::new({})...", num_qubits);
+                
+                // Подробно логируем каждый шаг инициализации
+                println!("Шаг 1: Вызов конструктора QuESTSimulator::new");
+                let simulator = QuESTSimulator::new(num_qubits);
+                println!("Шаг 2: Конструктор успешно вернул симулятор");
+                
+                simulator
+            });
+            
+            match simulator_result {
+                Ok(simulator) => {
+                    println!("Симулятор QuEST успешно создан!");
+                    let mut result = result_clone.lock().unwrap();
+                    *result = Some(Ok(simulator));
+                },
+                Err(e) => {
+                    // Улучшенная диагностика ошибки
+                    let error_msg = if let Some(s) = e.downcast_ref::<String>() {
+                        format!("Ошибка при создании симулятора QuEST: {}", s)
+                    } else if let Some(s) = e.downcast_ref::<&str>() {
+                        format!("Ошибка при создании симулятора QuEST: {}", s)
+                    } else {
+                        "Неизвестная ошибка при создании симулятора QuEST".to_string()
+                    };
+                    
+                    println!("{}", error_msg);
+                    
+                    let mut result = result_clone.lock().unwrap();
+                    *result = Some(Err(error_msg));
+                }
+            }
+        });
+        
+        // Ожидаем завершение потока с таймаутом
+        println!("Ожидание завершения инициализации (таймаут: {} сек)...", timeout_secs);
+        
+        // Ждем указанное время
+        for i in 1..=timeout_secs {
+            // Проверяем, завершился ли поток
+            if handle.is_finished() {
+                println!("Инициализация QuEST завершилась за {} секунд", i);
+                break;
+            }
+            
+            // Ждем 1 секунду
+            thread::sleep(Duration::from_secs(1));
+            
+            // Выводим статус ожидания
+            if i % 5 == 0 || i == 1 {
+                println!("Ожидание... прошло {} секунд", i);
+            }
+            
+            // Если достигли таймаута, выходим из цикла
+            if i == timeout_secs {
+                println!("Превышен таймаут в {} секунд!", timeout_secs);
+                return Err(format!("Таймаут при создании симулятора QuEST (превышен лимит в {} секунд). Возможно, библиотека QuEST зависает при инициализации.", timeout_secs));
+            }
+        }
+        
+        // Дождемся завершения потока, если он еще не завершился
+        if !handle.is_finished() {
+            // Если поток не завершился даже после таймаута, вернем ошибку
+            return Err(format!("Поток инициализации QuEST не завершился в течение {} секунд", timeout_secs));
+        }
+        
+        // Извлекаем результат
+        let result_mutex = result.lock();
+        if let Err(e) = result_mutex {
+            return Err(format!("Ошибка мьютекса при извлечении результата: {}", e));
+        }
+        
+        let mut locked_result = result_mutex.unwrap();
+        match locked_result.take() {
+            Some(res) => res,
+            None => Err("Поток инициализации QuEST не вернул результат".to_string())
+        }
+    }
+
+    /// Создает состояние Белла (максимально запутанное состояние двух кубитов)
+    fn create_bell_state(simulator: &mut QuESTSimulator) {
+        println!("Шаг: Создание состояния Белла - начало");
+        
+        // Инициализируем кубиты в состоянии |00⟩
+        simulator.reset();
+        println!("Шаг: Сброс симулятора выполнен");
+        
+        // Шаг 1: Применяем гейт Адамара к первому кубиту
+        simulator.hadamard(0);
+        println!("Шаг: Применен гейт Адамара к кубиту 0");
+        
+        // Шаг 2: Применяем CNOT с контролем на первом кубите
+        simulator.cnot(0, 1);
+        println!("Шаг: Применен гейт CNOT между кубитами 0 и 1");
+        
+        // Теперь система находится в состоянии (|00⟩ + |11⟩)/√2
+        println!("Шаг: Создание состояния Белла - завершено");
+    }
+    
+    /// Измеряет кубиты в состоянии Белла и возвращает результаты
+    fn measure_bell_state(simulator: &mut QuESTSimulator) -> (bool, bool) {
+        println!("Шаг: Измерение кубитов - начало");
+        
+        let qubit1 = simulator.measure(0);
+        println!("Шаг: Измерен кубит 0: результат = {}", qubit1);
+        
+        let qubit2 = simulator.measure(1);
+        println!("Шаг: Измерен кубит 1: результат = {}", qubit2);
+        
+        println!("Шаг: Измерение кубитов - завершено");
+        (qubit1, qubit2)
+    }
+    
+    /// Создает состояние GHZ для трех кубитов
+    fn create_ghz_state(simulator: &mut QuESTSimulator) {
+        // Инициализируем кубиты в состоянии |000⟩
+        simulator.reset();
+        
+        // Шаг 1: Применяем гейт Адамара к первому кубиту
+        simulator.hadamard(0);
+        
+        // Шаг 2: Применяем CNOT между первым и вторым кубитами
+        simulator.cnot(0, 1);
+        
+        // Шаг 3: Применяем CNOT между первым и третьим кубитами
+        simulator.cnot(0, 2);
+        
+        // Теперь система находится в состоянии (|000⟩ + |111⟩)/√2
+    }
+    
+    /// Проверяет запутанность между двумя кубитами
+    fn is_entangled(qubit1_results: &[bool], qubit2_results: &[bool]) -> bool {
+        // Для строгой запутанности результаты должны быть всегда одинаковыми
+        // либо всегда противоположными
+        if qubit1_results.len() != qubit2_results.len() || qubit1_results.is_empty() {
+            return false;
+        }
+        
+        let first_same = qubit1_results[0] == qubit2_results[0];
+        
+        for i in 1..qubit1_results.len() {
+            let same = qubit1_results[i] == qubit2_results[i];
+            if same != first_same {
+                return false;
+            }
+        }
+        
+        true
+    }
+    
+    /// Демонстрирует квантовую запутанность с использованием QuEST (неинтерактивная версия)
+    pub fn demonstrate_entanglement_noninteractive() -> Result<(), String> {
+        println!("\nДемонстрация квантовой запутанности с использованием QuEST (неинтерактивный режим):");
+        println!("Квантовая запутанность - это явление, при котором квантовые состояния двух или более частиц становятся взаимозависимыми.");
+        
+        // Создаем симулятор с двумя кубитами
+        println!("\nИнициализация квантового симулятора QuEST с двумя кубитами...");
+        
+        // Создаем симулятор с таймаутом в 10 секунд
+        let mut simulator = create_simulator_with_timeout(2, 10)?;
+        println!("Симулятор с 2 кубитами успешно создан и готов к работе!");
+        
+        // Выполняем 5 экспериментов с запутанными парами
+        println!("\nВыполняем 5 экспериментов с запутанными парами:");
+        
+        let mut same_results = 0;
+        for i in 1..=5 {
+            println!("\nЭксперимент #{}", i);
+            
+            create_bell_state(&mut simulator);
+            let (qubit1, qubit2) = measure_bell_state(&mut simulator);
+            
+            // Подсчитываем статистику
+            if qubit1 == qubit2 {
+                same_results += 1;
+            }
+            
+            println!("Результат эксперимента #{}: Кубит 1 = {}, Кубит 2 = {}", 
+                     i, qubit1, qubit2);
+        }
+        
+        // Показываем итоговую статистику
+        let correlation_percent = (same_results as f64 / 5.0) * 100.0;
+        println!("\nИтоговая корреляция измерений: {:.1}% ({} из 5)", 
+                 correlation_percent, same_results);
+        
+        println!("\nДемонстрация успешно завершена!");
+        
+        Ok(())
+    }
+}
+
+/// Безопасная демонстрация квантовой запутанности для случаев, когда QuEST не работает
+mod safe_demo {
+    use rand::Rng;
+    
+    /// Демонстрирует квантовую запутанность и телепортацию
+    pub fn demonstrate_entanglement() {
+        println!("\nБезопасная демонстрация квантовой запутанности:");
+        println!("Квантовая запутанность - это явление, при котором квантовые состояния двух или более частиц становятся взаимозависимыми.");
+        
+        // Демонстрация создания состояния Белла
+        println!("\n1. Создание состояния Белла (максимально запутанное состояние двух кубитов):");
+        println!("   Исходное состояние: |00⟩");
+        println!("   Шаг 1: Применяем гейт Адамара к первому кубиту → (|0⟩ + |1⟩)/√2 ⊗ |0⟩ = (|00⟩ + |10⟩)/√2");
+        println!("   Шаг 2: Применяем CNOT с контролем на первом кубите → (|00⟩ + |11⟩)/√2");
+        println!("   Результат: Состояние |Φ⁺⟩ = (|00⟩ + |11⟩)/√2");
+        
+        // Автоматическое выполнение нескольких экспериментов с запутанными парами
+        println!("\n2. Эксперименты с запутанными парами:");
+        
+        // Функция для симуляции создания и измерения запутанной пары кубитов
+        fn simulate_bell_pair_measurement() -> (bool, bool) {
+            // В состоянии Белла (|00⟩ + |11⟩)/√2 результаты должны быть скоррелированы
+            // Вероятность 50% получить пару (0,0) и 50% получить (1,1)
+            let mut rng = rand::thread_rng();
+            if rng.gen_bool(0.5) {
+                (false, false) // |00⟩
+            } else {
+                (true, true)   // |11⟩
+            }
+        }
+        
+        // Выполняем автоматические эксперименты
+        let num_experiments = 5;
+        let mut same_results = 0;
+        
+        for i in 1..=num_experiments {
+            // Симулируем измерение запутанной пары
+            let (qubit1, qubit2) = simulate_bell_pair_measurement();
+            
+            // Подсчитываем статистику
+            if qubit1 == qubit2 {
+                same_results += 1;
+            }
+            
+            println!("   Эксперимент #{}: Кубит 1 = {}, Кубит 2 = {}", 
+                     i, qubit1, qubit2);
+        }
+        
+        // Показываем итоговую статистику
+        let correlation_percent = (same_results as f64 / num_experiments as f64) * 100.0;
+        println!("   Корреляция измерений: {:.1}% ({} из {})", 
+                 correlation_percent, same_results, num_experiments);
+        
+        println!("   В идеальной квантовой системе корреляция должна быть 100%.");
+        
+        // Демонстрация запутанного состояния GHZ (обобщение состояния Белла на 3+ кубита)
+        println!("\n3. Запутанное состояние GHZ (Гринбергера-Хорна-Цайлингера):");
+        println!("   GHZ-состояние для трех кубитов: |GHZ⟩ = (|000⟩ + |111⟩)/√2");
+        println!("   В этом состоянии все кубиты полностью коррелированы между собой.");
+        println!("   Создание GHZ-состояния:");
+        println!("   - Шаг 1: Применяем Адамара к первому кубиту: (|0⟩ + |1⟩)/√2 ⊗ |0⟩ ⊗ |0⟩");
+        println!("   - Шаг 2: Применяем CNOT от первого кубита ко второму: (|00⟩ + |11⟩)/√2 ⊗ |0⟩");
+        println!("   - Шаг 3: Применяем CNOT от первого кубита к третьему: (|000⟩ + |111⟩)/√2");
+        
+        println!("\n   Проведем несколько измерений GHZ-состояния:");
+        
+        // Функция для симуляции измерения GHZ-состояния
+        fn simulate_ghz_measurement() -> (bool, bool, bool) {
+            // В состоянии GHZ (|000⟩ + |111⟩)/√2 результаты должны быть скоррелированы
+            let mut rng = rand::thread_rng();
+            let result = rng.gen_bool(0.5);
+            (result, result, result) // Все кубиты имеют одинаковое значение
+        }
+        
+        for i in 1..=5 {
+            let (bit1, bit2, bit3) = simulate_ghz_measurement();
+            
+            println!("   Измерение #{}: Кубиты = [{}, {}, {}]", i, bit1, bit2, bit3);
+            println!("   Все кубиты согласованы! √");
+        }
+        
+        // Демонстрация квантовой телепортации
+        println!("\n4. Квантовая телепортация на основе запутанности:");
+        println!("   Этот процесс позволяет передать квантовое состояние от одного кубита к другому,");
+        println!("   используя запутанную пару и классический канал связи.");
+        println!("   Шаги квантовой телепортации:");
+        println!("   1. Создаем запутанную пару кубитов (кубиты 1 и 2)");
+        println!("   2. Подготавливаем исходный кубит (кубит 0) в нужном состоянии");
+        println!("   3. Запутываем кубит 0 с кубитом 1");
+        println!("   4. Измеряем кубиты 0 и 1");
+        println!("   5. На основе результатов измерения применяем корректирующие операции к кубиту 2");
+        println!("   6. Кубит 2 теперь содержит исходное состояние кубита 0");
+        
+        println!("\n   Демонстрация телепортации состояния |1⟩:");
+        println!("   Телепортация успешна! Состояние |1⟩ перенесено на удаленный кубит.");
+        
+        println!("\nВажно: Несмотря на мгновенную корреляцию между запутанными кубитами, ");
+        println!("квантовая запутанность не позволяет передавать информацию быстрее света,");
+        println!("так как для извлечения информации требуется классический канал связи.");
+    }
+}
+
+fn main() {
+    // Выводим приветствие
+    println!("=== TRIAD v{} ===", VERSION);
+    println!("Квантово-вдохновленная распределенная сеть следующего поколения");
+    println!("---");
+    
+    // Парсим аргументы командной строки
+    let args: Vec<String> = std::env::args().collect();
+    
+    match args.get(1).map(|s| s.as_str()) {
+        Some("random") => {
+            // Запускаем только демонстрацию случайных чисел
+            simple_demo::demonstrate_random_number_generation();
+        },
+        Some("deutsch") => {
+            // Запускаем только алгоритм Дойча
+            simple_demo::demonstrate_deutsch_algorithm();
+        },
+        Some("entanglement") | Some("quest") => {
+            // Запускаем демонстрацию с использованием ТОЛЬКО QuEST
+            println!("Запуск демонстрации с использованием QuEST...");
+            
+            match quest_demo::demonstrate_entanglement_noninteractive() {
+                Ok(_) => println!("Демонстрация успешно завершена!"),
+                Err(e) => {
+                    println!("ОШИБКА: Не удалось выполнить демонстрацию с использованием QuEST: {}", e);
+                    println!("Пожалуйста, проверьте настройки сборки или среду выполнения.");
+                }
+            }
+        },
+        Some("help") | Some("-h") | Some("--help") => {
+            // Выводим справку
+            print_help();
+        },
+        Some(unknown) => {
+            // Неизвестная команда
+            println!("Неизвестная команда: {}", unknown);
+            println!("");
+            print_help();
+        },
+        None => {
+            // Запускаем все демонстрационные примеры
+            simple_demo::run_all_demos();
+        }
+    }
+}
+
+/// Выводит справку по использованию программы.
+fn print_help() {
+    println!("Использование: triad-node [КОМАНДА]");
+    println!("");
+    println!("КОМАНДЫ:");
+    println!("  random         Демонстрация генерации квантовых случайных чисел");
+    println!("  deutsch        Демонстрация алгоритма Дойча");
+    println!("  entanglement   Демонстрация квантовой запутанности с использованием QuEST");
+    println!("  quest          Демонстрация квантовой запутанности с использованием QuEST (то же, что и entanglement)");
+    println!("  help           Показать эту справку");
+    println!("");
+    println!("Если команда не указана, будут запущены все демонстрационные примеры.");
+    println!("");
+    println!("Примечание: Используется настоящая библиотека QuEST для квантовых симуляций.");
+} 

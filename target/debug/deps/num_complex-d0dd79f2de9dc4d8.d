@@ -1,0 +1,10 @@
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/libnum_complex-d0dd79f2de9dc4d8.rmeta: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/cast.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/pow.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/complex_float.rs
+
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/libnum_complex-d0dd79f2de9dc4d8.rlib: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/cast.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/pow.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/complex_float.rs
+
+/Users/mikhailmihailovich/Desktop/Blockchain/TRIAD/target/debug/deps/num_complex-d0dd79f2de9dc4d8.d: /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/lib.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/cast.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/pow.rs /Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/complex_float.rs
+
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/lib.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/cast.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/pow.rs:
+/Users/mikhailmihailovich/.cargo/registry/src/index.crates.io-6f17d22bba15001f/num-complex-0.4.6/src/complex_float.rs:
